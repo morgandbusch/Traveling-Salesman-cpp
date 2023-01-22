@@ -3,6 +3,7 @@
 #include <cmath>
 #include "node.h"
 #include "path.h"
+#include "mst.h"
 
 class Manager {
     public:
@@ -26,6 +27,10 @@ class Manager {
         Path get_current_path() const {return _current_path;}
         Path get_best_path() const {return _best_path;}
         float get_best_cost() const {return _best_cost;}
+        MST get_mst() const {return _mst;}
+
+
+
         void random_2swap(float p);
 
         void add_nodes(int n);
@@ -36,6 +41,7 @@ class Manager {
         float get_upper_y() const {return _upper_y;}
 
     private:
+        void nodes_modified();
 
         float _lower_x;
         float _lower_y;
@@ -48,4 +54,6 @@ class Manager {
         float _best_cost;
 
         std::vector<Node> _nodes;
+
+        MST _mst;
 };

@@ -24,7 +24,7 @@ bool Plotter::start_plot(ImVec2 winsize) {
 }
 
 
-void Plotter::plot_nodes(const std::vector<Node> nodes, bool draw) {
+void Plotter::plot_nodes(const std::vector<Node> nodes) {
 
 
     const int size = nodes.size();
@@ -38,17 +38,11 @@ void Plotter::plot_nodes(const std::vector<Node> nodes, bool draw) {
 
     }
 
-    if(draw){
-        ImPlot::SetCurrentContext(pctx);
+    ImPlot::SetCurrentContext(pctx);
 
-
-        ImPlot::PlotScatter("Nodes", xs, ys, size);
-
-
-        ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, 0.25f);
-        ImPlot::SetNextMarkerStyle(ImPlotMarker_Square, 6, ImPlot::GetColormapColor(1), IMPLOT_AUTO, ImPlot::GetColormapColor(1));
-        ImPlot::PopStyleVar();
-    }
+    ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4, ImVec4(0,.5,.7,1), IMPLOT_AUTO, ImVec4(0,.5,.7,1));
+    ImPlot::PlotScatter("Nodes", xs, ys, size);
+    
     
      
 }
@@ -63,7 +57,6 @@ void Plotter::plot_path(const Path &path, const ImVec4& col) {
 
     raw_plot_path(path);
     
-    ImPlot::SetNextLineStyle(IMPLOT_AUTO_COL);
 }
 
 void Plotter::raw_plot_path(const Path &path){
@@ -88,6 +81,29 @@ void Plotter::raw_plot_path(const Path &path){
     ImPlot::PlotLine(label.c_str(), xs, ys, size+1);
 
 }
+
+
+void Plotter::plot_mst(const MST &m){
+    ImPlot::SetCurrentContext(pctx);
+    
+    std::vector<MST_Node> nodes = m.get_nodes();
+    for(MST_Node n1 : nodes){
+        for(MST_Node *n2: n1.get_connections()){
+            float x1 = n1.get_x();
+            float y1 = n1.get_y();
+            float x2 = n2->get_x();
+            float y2 = n2->get_y();
+
+            float xs[2] = {x1, x2};
+            float ys[2] = {y1, y2};
+
+            ImPlot::SetNextLineStyle(ImVec4(0,.5f,.2f,1));
+            ImPlot::PlotLine("MST", xs, ys, 2);
+        }
+    }
+}
+
+
 
 void Plotter::load_bounds(const Manager & m) {
     _lower_x = m.get_lower_x();

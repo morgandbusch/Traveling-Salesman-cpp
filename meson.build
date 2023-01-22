@@ -13,6 +13,7 @@ files = files(
   'src/path.cpp',
   'src/manager.cpp',
   'src/algs.cpp',
+  'src/mst.cpp',
   'imgui/implot.cpp',
   'imgui/implot.cpp',
   'imgui/implot_items.cpp',
@@ -47,3 +48,12 @@ pathtest_files = files(
 
 pathtest = executable('pathtest', pathtest_files)
 test('path', pathtest)
+
+msttest_files = files(
+  'src/mst_test.cpp',
+  'src/node.cpp',
+  'src/mst.cpp',
+)
+
+msttest = executable('msttest', msttest_files)
+test('mst', msttest)

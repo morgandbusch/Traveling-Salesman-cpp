@@ -1,7 +1,10 @@
 #pragma once
 #include <iostream>
 
+class MST_Node;
+
 class Node{
+    friend class MST_Node;
     public:
         Node(float x, float y): _x(x), _y(y) {}
         Node(): Node(0, 0) {};

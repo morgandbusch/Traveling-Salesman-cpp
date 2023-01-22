@@ -6,6 +6,11 @@
 #include <vector>
 
 
+void Manager::nodes_modified() {
+    reset_paths();
+    _mst = MST(_nodes);
+}
+
 void Manager::add_nodes(int n){
     for(int i = 0; i < n; i++){
         // std::cout << "i=" << i << std::endl;
@@ -18,6 +23,8 @@ void Manager::add_nodes(int n){
         // std::cout << "adding node" << std::endl;
         _nodes.push_back(node);
     }
+    // fix everything that broke when nodes were changed
+    nodes_modified();
 }
 
 

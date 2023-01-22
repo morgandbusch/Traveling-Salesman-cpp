@@ -96,6 +96,7 @@ int main(int, char**)
     bool view_current_path = true;
     bool view_best_path = false;
     bool view_nodes = true;
+    bool view_mst = false;
     bool graph_open = true;
 
     int nodes_to_add = 5;
@@ -148,15 +149,18 @@ int main(int, char**)
             ImGui::Begin("Graph", &graph_open, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoScrollWithMouse);
             ImGui::SetWindowSize(winsize);
             if(plotter.start_plot(ImGui::GetWindowSize())){
-                plotter.plot_nodes(manager.get_nodes(), view_nodes);
+                if(view_nodes)
+                    plotter.plot_nodes(manager.get_nodes());
+
+                if(view_mst)
+                    plotter.plot_mst(manager.get_mst());
+
 
                 if(view_best_path)
                     plotter.plot_path(manager.get_best_path(), ImVec4(1, 1, 1, 1));
 
                 if(view_current_path)
                     plotter.plot_path(manager.get_current_path(), ImVec4(0, .33f, 1, 1));
-                
-
 
                 plotter.end_plot();
             }
@@ -170,6 +174,7 @@ int main(int, char**)
             ImGui::Checkbox("Nodes", &view_nodes);
             ImGui::Checkbox("Current Path", &view_current_path);
             ImGui::Checkbox("Best Path", &view_best_path);
+            ImGui::Checkbox("MST", &view_mst);
             ImGui::End();
         }
 
