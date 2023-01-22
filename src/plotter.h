@@ -22,7 +22,8 @@ class Plotter {
 
         void end_plot() {ImPlot::EndPlot();}
 
-        void load_bounds(const Manager & m);
+        void load_bounds();
+        void draw_bounds();
 
     private:
 
@@ -32,6 +33,8 @@ class Plotter {
         const ImVec4 BEST_PATH_COLOR = ImVec4(.75, .7, 0, .05);
         const int BEST_PATH_WIDTH = 15;
         const ImVec4 MST_COLOR = ImVec4(0,.5f,.2f,1);
+
+        const ImVec4 BOUNDS_COLOR = ImVec4(1, 0, 0, 1);
 
         void raw_plot_path(const Path &path);
         ImPlotContext *pctx;

@@ -25,6 +25,8 @@
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
+
+
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -87,17 +89,31 @@ int main(int, char**)
     ImGui_ImplOpenGL3_Init(glsl_version);
 
 
+    enum view_mode {
+    view,
+    algorithms,
+    info
+    };
+
     // Our state
     bool do_2swap = false;
     int swap_iterations = 1;
     float p_anneal = 0;
 
+    std::string mode_label = "View";
+
     //view state
+    view_mode mode = view;
     bool view_current_path = true;
     bool view_best_path = false;
     bool view_nodes = true;
     bool view_mst = false;
+    bool view_bounds = false;
+
     bool graph_open = true;
+
+    bool update_panel_position = false;
+    ImVec2 panel_position = ImVec2(0, 0);
 
     int nodes_to_add = 5;
 
@@ -110,13 +126,13 @@ int main(int, char**)
     manager.populate(10);
     manager.reset_paths();
 
-    plotter.load_bounds(manager);
+    plotter.load_bounds();
 
 
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        glfwGetFramebufferSize(window, &height, &width);
+        glfwGetFramebufferSize(window, &width, &height);
         
         
 
@@ -131,7 +147,7 @@ int main(int, char**)
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        ImVec2 winsize = ImVec2(height, width);
+        ImVec2 winsize = ImVec2(width+22, height+20);
         
         
 
@@ -145,16 +161,18 @@ int main(int, char**)
 
         // graph
         {
-            ImGui::SetNextWindowPos(ImVec2(0, 0));
+            ImGui::SetNextWindowPos(ImVec2(-18, -18));
             ImGui::Begin("Graph", &graph_open, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoScrollWithMouse);
             ImGui::SetWindowSize(winsize);
             if(plotter.start_plot(ImGui::GetWindowSize())){
+                if (view_bounds)
+                    plotter.draw_bounds();
+                
                 if(view_nodes)
                     plotter.plot_nodes();
 
                 if(view_mst)
                     plotter.plot_mst();
-
 
                 if(view_best_path)
                     plotter.plot_best_path();
@@ -168,63 +186,101 @@ int main(int, char**)
             
         }
 
-        // view options
+        if(update_panel_position){
+            ImGui::SetNextWindowPos(panel_position);
+            update_panel_position = false;
+        }
+
+        ImGui::Begin(mode_label.c_str());
         {
-            ImGui::Begin("View");
-            ImGui::Checkbox("Nodes", &view_nodes);
-            ImGui::Checkbox("Current Path", &view_current_path);
-            ImGui::Checkbox("Best Path", &view_best_path);
-            ImGui::Checkbox("MST", &view_mst);
-            ImGui::End();
-        }
+            if(ImGui::Button("Info")){
+                mode_label = "Info";
+                mode = info;
 
-        // alg control panel
-        {
-            ImGui::Begin("Algorithms");
-            ImGui::SliderInt("Iterations", &swap_iterations, 1, 1000);            
-            ImGui::SameLine();
-            ImGui::Checkbox("2swap", &do_2swap);
+                update_panel_position = true;
+                panel_position = ImGui::GetWindowPos();
 
-            ImGui::SliderInt("nodes", &nodes_to_add, 1, 20);
-            ImGui::SameLine();
-            if(ImGui::Button("Add Nodes")){
-                manager.add_nodes(nodes_to_add);
-                manager.reset_paths();
             }
             ImGui::SameLine();
-            if(ImGui::Button("Set Nodes")){
-                manager.populate(nodes_to_add);
-                manager.reset_paths();
+            if(ImGui::Button("Algorithms")){
+                mode_label = "Algorithms";
+                mode = algorithms;
+
+                update_panel_position = true;
+                panel_position = ImGui::GetWindowPos();
+
+
             }
+            ImGui::SameLine();
+            if(ImGui::Button("View")){
+                mode_label = "View";
+                mode = view;
 
-            if(ImGui::Button("Reset Path")){
-                manager.reset_current_path();
+                update_panel_position = true;
+                panel_position = ImGui::GetWindowPos();
+
             }
+            ImGui::Separator();
 
-            ImGui::SliderFloat("Prob.", &p_anneal, 0, 0.1);
+            switch(mode){
+                case info:
+                {
+                    float current_cost = manager.get_current_path().get_cost();
+                    std::string cost_string = "Path Cost: " + std::to_string(current_cost);
+                    ImGui::Text("%s", cost_string.c_str());
+                    
+                    float best_cost = manager.get_best_cost();
+                    std::string best_cost_string = "Best Cost: "+ std::to_string(best_cost);
+                    ImGui::Text("%s", best_cost_string.c_str());
 
-            ImGui::End();
+
+                    if(ImGui::Button("Reset Saved Stats")){
+                        manager.reset_best_path();
+                    }
+
+                }
+                break;
+                case algorithms:
+                {
+                    ImGui::SliderInt("Iterations", &swap_iterations, 1, 1000);            
+                    ImGui::SameLine();
+                    ImGui::Checkbox("2swap", &do_2swap);
+
+                    ImGui::SliderInt("nodes", &nodes_to_add, 1, 20);
+                    ImGui::SameLine();
+                    if(ImGui::Button("Add Nodes")){
+                        manager.add_nodes(nodes_to_add);
+                        manager.reset_paths();
+                    }
+                    ImGui::SameLine();
+                    if(ImGui::Button("Set Nodes")){
+                        manager.populate(nodes_to_add);
+                        manager.reset_paths();
+                    }
+
+                    if(ImGui::Button("Reset Path")){
+                        manager.reset_current_path();
+                    }
+
+                    ImGui::SliderFloat("Prob.", &p_anneal, 0, 0.1);
+                }
+                break;
+                case view:
+                {
+                    ImGui::Checkbox("Nodes", &view_nodes);
+                    ImGui::Checkbox("Bounds", &view_bounds);
+                    ImGui::Checkbox("Current Path", &view_current_path);
+                    ImGui::Checkbox("Best Path", &view_best_path);
+                    ImGui::Checkbox("MST", &view_mst);
+                }
+            }
         }
-
-        {   // Info
-            ImGui::Begin("Info");
+        ImGui::End();
 
 
-            float current_cost = manager.get_current_path().get_cost();
-            std::string cost_string = "Path Cost: " + std::to_string(current_cost);
-            ImGui::Text("%s", cost_string.c_str());
-            
-            float best_cost = manager.get_best_cost();
-            std::string best_cost_string = "Best Cost: "+ std::to_string(best_cost);
-            ImGui::Text("%s", best_cost_string.c_str());
 
 
-            if(ImGui::Button("Reset Saved Stats")){
-                manager.reset_best_path();
-            }
 
-            ImGui::End();
-        }
 
         // Rendering
         ImGui::Render();

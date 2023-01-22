@@ -113,9 +113,18 @@ void Plotter::plot_mst(){
 
 
 
-void Plotter::load_bounds(const Manager & m) {
-    _lower_x = m.get_lower_x();
-    _upper_x = m.get_upper_x();
-    _lower_y = m.get_lower_y();
-    _upper_y = m.get_upper_y();
+void Plotter::load_bounds() {
+    _lower_x = _manager->get_lower_x();
+    _upper_x = _manager->get_upper_x();
+    _lower_y = _manager->get_lower_y();
+    _upper_y = _manager->get_upper_y();
+}
+
+void Plotter::draw_bounds(){
+    float xs[5] = {_lower_x, _lower_x, _upper_x, _upper_x, _lower_x};
+    float ys[5] = {_lower_y, _upper_y, _upper_y, _lower_y, _lower_y};
+
+    ImPlot::SetCurrentContext(pctx);
+    ImPlot::SetNextLineStyle(BOUNDS_COLOR);
+    ImPlot::PlotLine("bounds", xs, ys, 5);
 }
