@@ -14,8 +14,8 @@ bool Plotter::start_plot(ImVec2 winsize) {
     if(ImPlot::BeginPlot("Scatter Plot", winsize, ImPlotFlags_CanvasOnly | ImPlotFlags_NoFrame | ImPlotFlags_NoChild)){
         ImPlot::SetupAxis(ImAxis_X1, "X", ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_NoHighlight | ImPlotAxisFlags_Lock);
         ImPlot::SetupAxis(ImAxis_Y1, "Y", ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_NoHighlight | ImPlotAxisFlags_Lock);
-        ImPlot::SetupAxisLimits(ImAxis_Y1, _lower_y-2, _upper_y+2);
-        ImPlot::SetupAxisLimits(ImAxis_X1, _lower_x-2, _upper_x+2);
+        ImPlot::SetupAxisLimits(ImAxis_Y1, _manager->_lower_y-2, _manager->_upper_y+2);
+        ImPlot::SetupAxisLimits(ImAxis_X1, _manager->_lower_x-2, _manager->_upper_x+2);
 
         return true;
     }
@@ -111,18 +111,9 @@ void Plotter::plot_mst(){
     }
 }
 
-
-
-void Plotter::load_bounds() {
-    _lower_x = _manager->get_lower_x();
-    _upper_x = _manager->get_upper_x();
-    _lower_y = _manager->get_lower_y();
-    _upper_y = _manager->get_upper_y();
-}
-
 void Plotter::draw_bounds(){
-    float xs[5] = {_lower_x, _lower_x, _upper_x, _upper_x, _lower_x};
-    float ys[5] = {_lower_y, _upper_y, _upper_y, _lower_y, _lower_y};
+    float xs[5] = {_manager->_lower_x, _manager->_lower_x, _manager->_upper_x, _manager->_upper_x, _manager->_lower_x};
+    float ys[5] = {_manager->_lower_y, _manager->_upper_y, _manager->_upper_y, _manager->_lower_y, _manager->_lower_y};
 
     ImPlot::SetCurrentContext(pctx);
     ImPlot::SetNextLineStyle(BOUNDS_COLOR);

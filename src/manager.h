@@ -40,13 +40,15 @@ class Manager {
         float get_lower_y() const {return _lower_y;}
         float get_upper_y() const {return _upper_y;}
 
-    private:
-        void nodes_modified();
-
         float _lower_x;
         float _lower_y;
         float _upper_x;
         float _upper_y;
+
+    private:
+        void nodes_modified();
+
+
 
         Path _current_path;
         Path _best_path;

@@ -92,7 +92,8 @@ int main(int, char**)
     enum view_mode {
     view,
     algorithms,
-    info
+    info,
+    setup
     };
 
     // Our state
@@ -125,8 +126,6 @@ int main(int, char**)
     srand(time(0));
     manager.populate(10);
     manager.reset_paths();
-
-    plotter.load_bounds();
 
 
     // Main loop
@@ -220,6 +219,15 @@ int main(int, char**)
                 panel_position = ImGui::GetWindowPos();
 
             }
+            ImGui::SameLine();
+            if(ImGui::Button("Setup")){
+                mode_label = "Setup";
+                mode = setup;
+
+                update_panel_position = true;
+                panel_position = ImGui::GetWindowPos();
+
+            }
             ImGui::Separator();
 
             switch(mode){
@@ -246,17 +254,7 @@ int main(int, char**)
                     ImGui::SameLine();
                     ImGui::Checkbox("2swap", &do_2swap);
 
-                    ImGui::SliderInt("nodes", &nodes_to_add, 1, 20);
-                    ImGui::SameLine();
-                    if(ImGui::Button("Add Nodes")){
-                        manager.add_nodes(nodes_to_add);
-                        manager.reset_paths();
-                    }
-                    ImGui::SameLine();
-                    if(ImGui::Button("Set Nodes")){
-                        manager.populate(nodes_to_add);
-                        manager.reset_paths();
-                    }
+                   
 
                     if(ImGui::Button("Reset Path")){
                         manager.reset_current_path();
@@ -272,6 +270,27 @@ int main(int, char**)
                     ImGui::Checkbox("Current Path", &view_current_path);
                     ImGui::Checkbox("Best Path", &view_best_path);
                     ImGui::Checkbox("MST", &view_mst);
+                }
+                break;
+                case setup:
+                {
+                    ImGui::SliderFloat("lower x", &manager._lower_x, -2, manager._upper_x);
+                    ImGui::SliderFloat("upper x", &manager._upper_x, manager._lower_x, 22);
+                    ImGui::SliderFloat("lower y", &manager._lower_y, -2, manager._upper_y);
+                    ImGui::SliderFloat("upper y", &manager._upper_y, manager._lower_y, 22);
+                    ImGui::Separator();
+
+                    ImGui::SliderInt("nodes", &nodes_to_add, 1, 20);
+                    ImGui::SameLine();
+                    if(ImGui::Button("Add Nodes")){
+                        manager.add_nodes(nodes_to_add);
+                        manager.reset_paths();
+                    }
+                    ImGui::SameLine();
+                    if(ImGui::Button("Set Nodes")){
+                        manager.populate(nodes_to_add);
+                        manager.reset_paths();
+                    }
                 }
             }
         }

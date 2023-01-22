@@ -22,7 +22,6 @@ class Plotter {
 
         void end_plot() {ImPlot::EndPlot();}
 
-        void load_bounds();
         void draw_bounds();
 
     private:
@@ -40,18 +39,10 @@ class Plotter {
         ImPlotContext *pctx;
         Manager *_manager;
 
-        float _lower_x;
-        float _lower_y;
-        float _upper_x;
-        float _upper_y;
+        
 };
 
 Plotter::Plotter(Manager *manager) {
     pctx = ImPlot::CreateContext(); 
     _manager = manager;
-
-    _lower_x = 0;
-    _lower_y = 0;
-    _upper_x = 20;
-    _upper_y = 20;
 }
