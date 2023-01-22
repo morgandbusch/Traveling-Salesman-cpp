@@ -104,7 +104,7 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     
     Manager manager;
-    Plotter plotter;
+    Plotter plotter = Plotter(&manager);
 
     srand(time(0));
     manager.populate(10);
@@ -150,17 +150,17 @@ int main(int, char**)
             ImGui::SetWindowSize(winsize);
             if(plotter.start_plot(ImGui::GetWindowSize())){
                 if(view_nodes)
-                    plotter.plot_nodes(manager.get_nodes());
+                    plotter.plot_nodes();
 
                 if(view_mst)
-                    plotter.plot_mst(manager.get_mst());
+                    plotter.plot_mst();
 
 
                 if(view_best_path)
-                    plotter.plot_path(manager.get_best_path(), ImVec4(1, 1, 1, 1));
+                    plotter.plot_best_path();
 
                 if(view_current_path)
-                    plotter.plot_path(manager.get_current_path(), ImVec4(0, .33f, 1, 1));
+                    plotter.plot_current_path();
 
                 plotter.end_plot();
             }

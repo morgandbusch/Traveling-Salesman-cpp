@@ -24,8 +24,8 @@ bool Plotter::start_plot(ImVec2 winsize) {
 }
 
 
-void Plotter::plot_nodes(const std::vector<Node> nodes) {
-
+void Plotter::plot_nodes() const{
+    std::vector<Node> nodes = _manager->get_nodes();
 
     const int size = nodes.size();
     
@@ -40,20 +40,27 @@ void Plotter::plot_nodes(const std::vector<Node> nodes) {
 
     ImPlot::SetCurrentContext(pctx);
 
-    ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4, ImVec4(0,.5,.7,1), IMPLOT_AUTO, ImVec4(0,.5,.7,1));
+    ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4, NODE_COLOR, IMPLOT_AUTO, NODE_COLOR);
     ImPlot::PlotScatter("Nodes", xs, ys, size);
     
     
      
 }
 
-void Plotter::plot_path(const Path &path) {
+void Plotter::plot_current_path() {
+    Path path = _manager->get_current_path();
+    
+    ImPlot::SetCurrentContext(pctx);
+    ImPlot::SetNextLineStyle(CURRENT_PATH_COLOR);
+
     raw_plot_path(path);
 }
 
-void Plotter::plot_path(const Path &path, const ImVec4& col) {
+void Plotter::plot_best_path() {
+    Path path = _manager->get_best_path();
+
     ImPlot::SetCurrentContext(pctx);
-    ImPlot::SetNextLineStyle(col);
+    ImPlot::SetNextLineStyle(BEST_PATH_COLOR, BEST_PATH_WIDTH);
 
     raw_plot_path(path);
     
@@ -83,7 +90,8 @@ void Plotter::raw_plot_path(const Path &path){
 }
 
 
-void Plotter::plot_mst(const MST &m){
+void Plotter::plot_mst(){
+    MST m = _manager->get_mst();
     ImPlot::SetCurrentContext(pctx);
     
     std::vector<MST_Node> nodes = m.get_nodes();
@@ -97,7 +105,7 @@ void Plotter::plot_mst(const MST &m){
             float xs[2] = {x1, x2};
             float ys[2] = {y1, y2};
 
-            ImPlot::SetNextLineStyle(ImVec4(0,.5f,.2f,1));
+            ImPlot::SetNextLineStyle(MST_COLOR);
             ImPlot::PlotLine("MST", xs, ys, 2);
         }
     }

@@ -29,7 +29,8 @@ void Manager::add_nodes(int n){
 
 
 void Manager::populate(int n) {
-    _nodes = std::vector<Node>(n);
+    _nodes = std::vector<Node>();
+    _nodes.reserve(n);
     add_nodes(n);
 }
 
@@ -67,6 +68,9 @@ void Manager::reset_paths(){
 
 void Manager::random_2swap(float p) {
     int upper = _current_path.size() - 1;
+    if(upper == 0){
+        return;
+    }
     
     //Generate unique indices a and b for _nodes vector
     int a = std::round(randrange(0, upper));

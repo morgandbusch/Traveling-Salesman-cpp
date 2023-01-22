@@ -9,15 +9,15 @@
 
 class Plotter {
     public:
-        Plotter();
+        Plotter(Manager *manager);
 
         bool start_plot(ImVec2 size);
 
 
-        void plot_nodes(const std::vector<Node> nodes);
-        void plot_path(const Path &path);
-        void plot_path(const Path &path, const ImVec4& col);
-        void plot_mst(const MST &m);
+        void plot_nodes() const;
+        void plot_current_path();
+        void plot_best_path();
+        void plot_mst();
 
 
         void end_plot() {ImPlot::EndPlot();}
@@ -26,8 +26,16 @@ class Plotter {
 
     private:
 
+        const ImVec4 NODE_COLOR = ImVec4(0,.5,.7,1);
+
+        const ImVec4 CURRENT_PATH_COLOR = ImVec4(0, .33f, 1, 1);
+        const ImVec4 BEST_PATH_COLOR = ImVec4(.75, .7, 0, .05);
+        const int BEST_PATH_WIDTH = 15;
+        const ImVec4 MST_COLOR = ImVec4(0,.5f,.2f,1);
+
         void raw_plot_path(const Path &path);
         ImPlotContext *pctx;
+        Manager *_manager;
 
         float _lower_x;
         float _lower_y;
@@ -35,9 +43,10 @@ class Plotter {
         float _upper_y;
 };
 
-Plotter::Plotter() {
+Plotter::Plotter(Manager *manager) {
     pctx = ImPlot::CreateContext(); 
-    
+    _manager = manager;
+
     _lower_x = 0;
     _lower_y = 0;
     _upper_x = 20;
