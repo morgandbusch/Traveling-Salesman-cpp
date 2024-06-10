@@ -1,7 +1,7 @@
 #include "plotter.h"
 #include "node.h"
 #include "path.h"
-#include "../imgui/implot.h"
+#include "implot.h"
 #include <vector>
 #include <cmath>
 #include <algorithm>
@@ -11,7 +11,7 @@
 
 
 bool Plotter::start_plot(ImVec2 winsize) {
-    if(ImPlot::BeginPlot("Scatter Plot", winsize, ImPlotFlags_CanvasOnly | ImPlotFlags_NoFrame | ImPlotFlags_NoChild)){
+    if(ImPlot::BeginPlot("Scatter Plot", winsize, ImPlotFlags_CanvasOnly | ImPlotFlags_NoFrame | ImPlotFlags_NoTitle)){
         ImPlot::SetupAxis(ImAxis_X1, "X", ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_NoHighlight | ImPlotAxisFlags_Lock);
         ImPlot::SetupAxis(ImAxis_Y1, "Y", ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_NoHighlight | ImPlotAxisFlags_Lock);
         ImPlot::SetupAxisLimits(ImAxis_Y1, _manager->_lower_y-2, _manager->_upper_y+2);

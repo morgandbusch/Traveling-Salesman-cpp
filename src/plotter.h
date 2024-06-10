@@ -3,7 +3,7 @@
 #include "path.h"
 #include "manager.h"
 #include "mst.h"
-#include "../imgui/implot.h"
+#include "implot.h"
 #include <vector>
 
 
