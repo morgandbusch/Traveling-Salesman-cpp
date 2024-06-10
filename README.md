@@ -1,31 +1,21 @@
 # Overview
-This project brute forces the traveling salesman problem, visually showing the process utilizing imgui and GLFW.\
+This project brute forces the traveling salesman problem, visually showing the process utilizing imgui and GLFW.
 
+<details>
+<summary>Screenshots</summary>
 Small problem:\
 ![small example 1](docs/running_example_1.png)\
 Small problem solution:\
-![small example 2](docs/running_example_2.png)\
+![small example 2](docs/running_example_2.png)
 
-\
+
 Large problem:\
 ![large example 1](docs/large_running_example_1.png)\
 Large problem solution:\
 ![large example 2](docs/large_running_example_2.png)\
 Better Large problem solution:\
-![large example 3](docs/large_running_example_3.png)\
-
-# Build Instructions
-This project uses meson and ninja. After these tools are installed, run the following to download, build, and run the app:
-```
-git clone https://github.com/morgandbusch/Traveling-Salesman-cpp.git &&
-cd Traveling-Salesman-cpp/ &&
-git submodule init &&
-git submodule update &&
-meson build &&
-cd build &&
-ninja app
-./app
-```
+![large example 3](docs/large_running_example_3.png)
+</details>
 
 ## Traveling salesman problem Overview
 Given a set of random points, what s the shortest loop that visits each point at least once?\
@@ -64,4 +54,15 @@ In this case, the path is improved. However, to avoid getting stuck in a local m
     - Change boundaries of where nodes can be generated
     - Add / Set number of nodes. These nodes are randomly placed within the set boundary
 
-
+# Build Instructions
+This project uses meson and ninja. After these tools are installed, run the following to download, build, and run the app:
+```
+git clone https://github.com/morgandbusch/Traveling-Salesman-cpp.git &&
+cd Traveling-Salesman-cpp/ &&
+git submodule init &&
+git submodule update &&
+meson build &&
+cd build &&
+ninja app
+./app
+```
